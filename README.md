@@ -48,7 +48,7 @@ After satisfying the prerequisites, you can use the following instructions
 to install AFL++-DiPri:
 
 ```shell
-git clone https://github.com/QRXqrx/aflpp-dipri.git
+git clone https://github.com/isefuzz/aflpp-dipri.git
 cd aflpp-dipri
 make source-only
 ```
