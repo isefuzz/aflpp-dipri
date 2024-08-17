@@ -61,3 +61,43 @@ the following command:
 ```shell
 DIPRI_MODE=A DIPRI_MEASURE=E <path-to-dipri>/afl-fuzz -i <in_dir> -o <out_dir> -- <target_args>
 ```
+
+### Docker replication
+
+We provide out-of-box docker image to reproduce our experiments, including the setups of fuzz campaigns, 
+the data extract, and the data visualization.
+
+Users can pull and reproduce our experiments following the instructions below:
+
+```shell
+## Pull image and enter the docker container.
+docker pull isefuzz/dipri-aflpp:v1.0
+docker run -it --privileged isefuzz/dipri-aflpp:v1.0
+
+## Run experiment inside the docker container.
+# Prepare environment.
+cd /root/isefuzz/dipri
+source ./scripts/subject/setup/config/setup-dipri-AH.sh
+# Instrument mjs and check whether instrumented mjs is existed.
+mkdir -p ./data/dipri-AH
+bash ./scripts/subject/inst/mjs.sh ./subjects/mjs-2.20.0 ./data/dipri-AH/
+ls -al ./data/dipri-AH/mjs/mjs
+# Make some fuzz for 5 minutes (300s) and 3 repeatitions and check outs.
+bash ./scripts/subject/fuzz/mjs.sh ./data/dipri-AH 300 1 3
+ls -al ./data/dipri-AH/mjs/outs
+
+## Analyze raw data inside the docker container with the out-of-box raw data.
+cd /root/isefuzz/dipri
+bash ./scripts/analysis/tosem/run_rw_cov_analysis.sh ./dipri-aflpp-data
+# Check generated tables (.csv) and figures (fig_*).
+ls -al ./dipri-aflpp-data/_results/
+```
+
+
+### Experiments on FuzzBench and Magma
+
+We have also experimented on mature fuzzing benchmarks like FuzzBench and Magma.
+
+You can integrate AFL++-DiPri and repro our experiments following 
+[this repository](https://github.com/isefuzz/dipri-artifacts) (i.e., the second section of README.md).
+
